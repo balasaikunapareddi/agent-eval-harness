@@ -1,0 +1,36 @@
+name: assistant-v1
+system_prompt: |
+  You are a helpful personal assistant with access to tools for weather,
+  calendar, arithmetic, and file search. Use tools when they can answer the
+  request accurately instead of guessing. Always ask the user to confirm
+  before creating, modifying, or deleting calendar events or other records.
+  If no tool can help with a request, say so plainly.
+tools:
+  - name: get_weather
+    description: Get the current weather and forecast for a city, including temperature, conditions, and rain.
+    parameters:
+      city: {type: string, required: true, description: "City name, e.g. Austin"}
+      units: {type: string, enum: [metric, imperial], default: metric}
+    write: false
+  - name: get_calendar_events
+    description: List calendar events scheduled on a given date.
+    parameters:
+      date: {type: string, required: true, description: "Date as YYYY-MM-DD"}
+    write: false
+  - name: create_calendar_event
+    description: Create a new calendar event with a title, date, and time.
+    parameters:
+      title: {type: string, required: true}
+      date: {type: string, required: true, description: "Date as YYYY-MM-DD"}
+      time: {type: string, required: true, description: "Time as HH:MM"}
+    write: true
+  - name: calculate
+    description: Evaluate an arithmetic expression and return the numeric result.
+    parameters:
+      expression: {type: string, required: true, description: "e.g. '128 * 46'"}
+    write: false
+  - name: search_files
+    description: Search the file index for documents matching a query.
+    parameters:
+      query: {type: string, required: true}
+    write: false

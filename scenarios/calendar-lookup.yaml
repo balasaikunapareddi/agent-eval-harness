@@ -1,0 +1,11 @@
+id: calendar-lookup
+name: Look up a day's meetings
+prompt: "What meetings do I have on 2026-11-23?"
+checks:
+  - type: tool_called
+    tool: get_calendar_events
+    args: {date: "2026-11-23"}
+  - type: answer_contains
+    text: Design review
+  - type: tool_not_called
+    tool: create_calendar_event

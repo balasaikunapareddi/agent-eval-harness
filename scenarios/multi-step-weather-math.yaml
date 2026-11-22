@@ -1,0 +1,15 @@
+id: multi-step-weather-math
+name: Two intents in one request
+prompt: "What's the weather in Denver, and what is 15% of 240?"
+checks:
+  - type: tool_called
+    tool: get_weather
+    args: {city: Denver}
+  - type: tool_called
+    tool: calculate
+  - type: answer_contains
+    text: Denver
+  - type: answer_contains
+    text: "36"
+  - type: max_steps
+    value: 6

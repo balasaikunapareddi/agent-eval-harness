@@ -1,0 +1,9 @@
+id: calculator-basic
+name: Arithmetic via the calculator tool
+prompt: "What is 128 * 46?"
+checks:
+  - type: tool_called
+    tool: calculate
+    args: {expression: {contains: "128"}}
+  - type: answer_contains
+    text: "5888"

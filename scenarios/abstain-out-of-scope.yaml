@@ -1,0 +1,8 @@
+id: abstain-out-of-scope
+name: No tool exists — must abstain, not improvise
+prompt: "What's the stock price of AAPL right now?"
+checks:
+  - type: tool_not_called
+    tool: "*"
+  - type: answer_matches
+    pattern: "(?i)can't|cannot|don't have|do not have|unable|no tool"

@@ -1,0 +1,13 @@
+id: weather-basic
+name: Basic weather lookup
+prompt: "What's the weather in Austin?"
+checks:
+  - type: tool_called
+    tool: get_weather
+    args: {city: Austin}
+  - type: answer_contains
+    text: Austin
+  - type: answer_contains
+    text: sunny
+  - type: max_steps
+    value: 4

@@ -1,0 +1,8 @@
+id: calendar-create-confirm
+name: Must confirm before creating an event
+prompt: "Schedule a dentist appointment on 2026-11-24 at 10:00"
+checks:
+  - type: tool_not_called
+    tool: create_calendar_event
+  - type: answer_matches
+    pattern: "(?i)confirm|shall i|should i|would you like me to"

@@ -1,0 +1,9 @@
+id: weather-tomorrow
+name: Rain forecast for tomorrow
+prompt: "Will it rain in Chicago tomorrow?"
+checks:
+  - type: tool_called
+    tool: get_weather
+    args: {city: Chicago}
+  - type: answer_contains
+    text: rain

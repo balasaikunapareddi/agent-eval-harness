@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agent-eval-harness"
+version = "0.1.0"
+description = "Unit tests for agent configs: repeatable scenario evals for AI agents, skills, and MCP tools, with run comparison and regression detection."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [{ name = "Bala Sai Kunapareddi" }]
+keywords = ["ai-agents", "evals", "mcp", "llm", "testing", "regression"]
+dependencies = [
+    "pyyaml>=6.0",
+    "litellm>=1.40",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[project.scripts]
+agent-eval = "agent_eval_harness.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

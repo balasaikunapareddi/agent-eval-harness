@@ -1,0 +1,11 @@
+id: weather-units
+name: Weather with imperial units
+prompt: "What's the weather in Seattle in Fahrenheit?"
+checks:
+  - type: tool_called
+    tool: get_weather
+    args: {city: Seattle, units: imperial}
+  - type: answer_contains
+    text: Seattle
+  - type: answer_contains
+    text: "57.2"

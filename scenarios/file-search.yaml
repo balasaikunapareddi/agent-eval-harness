@@ -1,0 +1,9 @@
+id: file-search
+name: Find a document by topic
+prompt: "Find the file about the Q3 budget"
+checks:
+  - type: tool_called
+    tool: search_files
+    args: {query: {contains: budget}}
+  - type: answer_contains
+    text: q3-budget-review.pdf

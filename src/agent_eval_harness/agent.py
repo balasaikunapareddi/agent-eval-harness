@@ -26,6 +26,12 @@ from typing import Any
 
 from .checks import RunOutcome, ToolCall
 from .config import AgentConfig, ToolSpec
+from .prompts import (
+    ACTION_INSTRUCTIONS,
+    INVALID_JSON_RETRY,
+    JUDGE_INSTRUCTIONS,
+    JUDGE_REPLY_FORMAT,
+)
 from .tools import TOOL_IMPLEMENTATIONS, reset_state
 
 DEFAULT_MODEL = "gemini/gemini-3.5-flash-lite"
@@ -317,16 +323,13 @@ class LiteLLMBackend:
             f"Available tools:\n{tools_desc}\n\n"
             f"User request: {state.user_prompt}\n\n"
             f"Tool results so far:\n{observations}\n\n"
-            "Reply with exactly ONE JSON object, nothing else. Either:\n"
-            '{"action": "tool_call", "tool": "<tool name>", "args": {...}}\n'
-            "or, when you have everything you need:\n"
-            '{"action": "final", "answer": "<your answer to the user>"}'
+            + ACTION_INSTRUCTIONS
         )
         raw = self._complete([{"role": "user", "content": prompt}])
         action = _parse_action(raw)
         if action is None:
             raw = self._complete(
-                [{"role": "user", "content": prompt + "\n\nYour last reply was not valid JSON. Reply with ONE JSON object only."}]
+                [{"role": "user", "content": prompt + INVALID_JSON_RETRY}]
             )
             action = _parse_action(raw)
         if action is None:
@@ -335,9 +338,9 @@ class LiteLLMBackend:
 
     def judge(self, rubric: str, answer: str) -> tuple[float, str]:
         prompt = (
-            "You are grading an AI assistant's answer against a rubric.\n"
-            f"Rubric: {rubric}\n\nAnswer to grade:\n{answer}\n\n"
-            'Reply with exactly ONE JSON object: {"score": <0.0-1.0>, "reason": "<short reason>"}'
+            JUDGE_INSTRUCTIONS
+            + f"Rubric: {rubric}\n\nAnswer to grade:\n{answer}\n\n"
+            + JUDGE_REPLY_FORMAT
         )
         raw = self._complete([{"role": "user", "content": prompt}])
         m = re.search(r"\{.*\}", raw, re.DOTALL)
@@ -371,7 +374,17 @@ def _parse_action(raw: str) -> Action | None:
 
 
 class ReferenceAgent:
-    """A minimal tool-calling agent: backend decides, tools execute."""
+    """The agent under test: a minimal tool-calling loop.
+
+    Construct with an :class:`~agent_eval_harness.config.AgentConfig`
+    (the system prompt + tool schemas being evaluated — loaded from a
+    config file, never hardcoded here) and a backend
+    (:class:`MockBackend` offline or :class:`LiteLLMBackend` live).
+    :meth:`run` executes the loop: the backend decides the next action
+    (tool call or final answer), tools execute via
+    ``TOOL_IMPLEMENTATIONS``, and every step is recorded in the
+    returned :class:`~agent_eval_harness.checks.RunOutcome`.
+    """
 
     def __init__(self, config: AgentConfig, backend: MockBackend | LiteLLMBackend):
         self.config = config

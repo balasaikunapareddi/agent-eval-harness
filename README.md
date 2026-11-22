@@ -192,6 +192,7 @@ src/agent_eval_harness/
   scenarios.py   load + validate scenario files
   checks.py      check evaluation (tool calls, answers, judge)
   config.py      agent config + fingerprinting
+  prompts.py     live-backend prompt scaffolding (action protocol, judge)
   tools.py       mock MCP-style tool implementations
   agent.py       reference agent; mock + LiteLLM backends
   runner.py      execute scenarios, persist runs
